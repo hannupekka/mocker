@@ -1,0 +1,19 @@
+{
+  "name": "mocker",
+  "version": "1.0.0",
+  "description": "Mock data for your requests.",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/lab/bin/lab -c"
+  },
+  "author": "Hannu-Pekka Heinajarvi <hannupekka@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "code": "^1.3.0",
+    "lab": "^5.5.0"
+  },
+  "dependencies": {
+    "hapi": "^8.4.0",
+    "lodash": "^3.5.0"
+  }
+}
