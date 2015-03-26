@@ -1,19 +1,21 @@
 // Modules.
-var _ = require("lodash"),
-    Chance = require("chance"),
-    chance = new Chance(),
-    moment = require("moment");
+var _ = require('lodash');
+var Chance = require('chance');
+var chance = new Chance();
+var moment = require('moment');
 
 // Routes.
 module.exports = {
-    method: "POST",
-    path: "/",
-    handler: function (request, reply) {
-        var payload = _.isEmpty(request.payload) ? {} : request.payload,
-            fields = payload.fields,
-            response = {};
+    method: 'POST',
+    path: '/',
+    handler: function(request, reply) {
+        var payload = _.isEmpty(request.payload) ? {} : request.payload;
+        var fields = payload.fields;
+        var response = {};
 
-        if (_.isUndefined(fields)) return reply(response);
+        if (_.isUndefined(fields)) {
+            return reply(response);
+        }
 
         _.each(fields, function(field) {
             response[field.name] = generate(field);
@@ -24,21 +26,21 @@ module.exports = {
 };
 
 var generate = function(field) {
-    var value,
-        params = {},
-        options = field.options || {},
-        children = field.children || [];
+    var value;
+    var params = {};
+    var options = field.options || {};
+    var children = field.children || [];
 
     switch (field.type) {
         default:
-        case "String":
+        case 'String':
             params = {
                 length: options.length || 20
             };
             value = chance.word(params);
             break;
-        case "Number":
-            if (options.type && options.type === "float") {
+        case 'Number':
+            if (options.type && options.type === 'float') {
                 params = {
                   min: options.min || undefined,
                   max: options.max || undefined,
@@ -53,13 +55,13 @@ var generate = function(field) {
                 value = chance.integer(params);
             }
             break;
-        case "Boolean":
+        case 'Boolean':
             value = chance.bool();
             break;
-        case "Array":
+        case 'Array':
             value = [];
-            var count,
-                target = value;
+            var count;
+            var target = value;
             _.each(children, function(child, index) {
                 count = child.count || 0;
                 if (count > 0) {
@@ -67,7 +69,6 @@ var generate = function(field) {
                         value[index] = [];
                         target = value[index];
                     }
-                    
                     for (var i = 0; i < count; i++) {
                         target.push(generate(child));
                     }
@@ -76,7 +77,7 @@ var generate = function(field) {
                 }
             });
             break;
-        case "Date":
+        case 'Date':
             if (_.isUndefined(options.from) || _.isEmpty(options.from)) {
                 value = moment(chance.date()).format(options.format || '');
             } else {

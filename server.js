@@ -1,6 +1,6 @@
 // Require modules.
-var Hapi = require('hapi'),
-    routes = require('./routes/routes.js');
+var Hapi = require('hapi');
+var routes = require('./routes/routes.js');
 
 // Create server.
 var server = new Hapi.Server();

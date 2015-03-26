@@ -4,12 +4,13 @@
   "description": "Mock responses for your requests.",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/lab/bin/lab -c"
+    "test": "./node_modules/lab/bin/lab -c && ./node_modules/jscs/bin/jscs ."
   },
   "author": "Hannu-Pekka Heinajarvi <hannupekka@gmail.com>",
   "license": "ISC",
   "devDependencies": {
     "code": "^1.3.0",
+    "jscs": "^1.11.3",
     "lab": "^5.5.0"
   },
   "dependencies": {
