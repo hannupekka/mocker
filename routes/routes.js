@@ -6,8 +6,8 @@ var moment = require('moment');
 
 // Routes.
 module.exports = {
-    method: 'POST',
-    path: '/',
+    method: '*',
+    path: '/api/{path*}',
     handler: function(request, reply) {
         var payload = _.isEmpty(request.payload) ? {} : request.payload;
         var fields = payload.fields;
@@ -18,47 +18,24 @@ module.exports = {
         }
 
         _.each(fields, function(field) {
-            response[field.name] = generate(field);
+            response[field.name] = !_.isUndefined(field.value) ? field.value : generate(field);
         });
 
         reply(response);
     }
 };
 
-var generate = function(field) {
+var generate = function(field, iteration) {
     var value;
-    var params = {};
     var options = field.options || {};
     var children = field.children || [];
 
     switch (field.type) {
         default:
-        case 'String':
-            params = {
-                length: options.length || 20
-            };
-            value = chance.word(params);
+            var fn = field.type;
+            value = _.isFunction(chance[fn]) ? chance[fn](options) : null;
             break;
-        case 'Number':
-            if (options.type && options.type === 'float') {
-                params = {
-                  min: options.min || undefined,
-                  max: options.max || undefined,
-                  fixed: options.fixed || 0
-                };
-                value = chance.floating(params);
-            } else {
-                params = {
-                  min: options.min || -9007199254740992,
-                  max: options.max || 9007199254740992
-                };
-                value = chance.integer(params);
-            }
-            break;
-        case 'Boolean':
-            value = chance.bool();
-            break;
-        case 'Array':
+        case 'array':
             value = [];
             var count;
             var target = value;
@@ -70,20 +47,31 @@ var generate = function(field) {
                         target = value[index];
                     }
                     for (var i = 0; i < count; i++) {
-                        target.push(generate(child));
+                        target.push(generate(child, i));
                     }
                 } else {
                     value.push(generate(child));
                 }
             });
             break;
-        case 'Date':
-            if (_.isUndefined(options.from) || _.isEmpty(options.from)) {
-                value = moment(chance.date()).format(options.format || '');
-            } else {
-                var date = moment(options.from);
-                value = date.format(options.format || '');
+        case 'date':
+            var date = _.isUndefined(options.from) ? moment(chance.date()) : moment(options.from);
+
+            if (!_.isUndefined(options.add) && !_.isUndefined(iteration)) {
+                var amount = options.add.amount;
+                var unit = options.add.unit;
+                if (!_.isUndefined(amount) && !_.isUndefined(unit)) {
+                    date = date.add(amount * iteration, unit);
+                }
             }
+            value = date.format(options.format || '');
+            break;
+        case 'object':
+            value = {};
+            _.each(field.fields, function(childField) {
+                value[childField.name] = !_.isUndefined(childField.value) ?
+                    childField.value : generate(childField, iteration);
+            });
             break;
     }
 
