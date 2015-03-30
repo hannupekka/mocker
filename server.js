@@ -5,8 +5,8 @@ var routes = require('./routes/routes.js');
 // Create server.
 var server = new Hapi.Server();
 server.connection({
-  host: '0.0.0.0',
-  port: process.env.PORT
+    host: '0.0.0.0',
+    port: process.env.PORT
 });
 
 // Add routes.
