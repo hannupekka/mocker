@@ -2,7 +2,7 @@
     "preset": "google",
     "fileExtensions": [ ".js", "jscs" ],
     "requireParenthesesAroundIIFE": true,
-    "maximumLineLength": 120,
+    "maximumLineLength": null,
     "validateLineBreaks": "LF",
     "validateIndentation": 4,
     "disallowKeywords": ["with"],
