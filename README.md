@@ -194,5 +194,8 @@ Response:
 }
 ```
 
+## Try it
+Point your requests to [responsemocker.herokuapp.com/api](responsemocker.herokuapp.com/api)
+
 ## TODO
 * Allow multiple values for `add`in `date`-type fields.
