@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Mocker by hannupekka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Mocker</h1>
+      <h2 class="project-tagline">Mock response data for your requests</h2>
+      <a href="https://github.com/hannupekka/mocker" class="btn">View on GitHub</a>
+      <a href="https://github.com/hannupekka/mocker/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/hannupekka/mocker/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="mocker-" class="anchor" href="#mocker-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mocker <a href="https://travis-ci.org/hannupekka/mocker"><img src="https://travis-ci.org/hannupekka/mocker.svg?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>With Mocker, you can fake responses for your HTTP requests. Just send a JSON object describing the response you need along the request and Mocker takes care of rest.</p>
+
+<h2>
+<a id="installing-and-running" class="anchor" href="#installing-and-running" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing and running</h2>
+
+<ul>
+<li>First install dependencies with <code>npm install</code>
+</li>
+<li>Then run with <code>node server.js</code>
+</li>
+<li>Run tests with <code>npm test</code>
+</li>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>By default, Mocker listens for all methods at <code>http://host:port/api/*</code>. Just make sure your request has header <code>Content-Type: application/json</code>.</p>
+
+<p>Structure for request body is as follows:</p>
+
+<pre><code>{
+    "fields": []
+}
+</code></pre>
+
+<p><code>fields</code>-property should be filled with objects, that describe fields. Structure for field objects is:</p>
+
+<pre><code>{
+    "name": "&lt;field name&gt;",
+    "type": "&lt;field type&gt;",
+    "value": "&lt;field value&gt;",
+    "options": {
+        "&lt;option name&gt;": "&lt;option value&gt;"
+    },
+    "children": [],
+    "count": 0
+
+}
+</code></pre>
+
+<ul>
+<li>
+<code>name</code> - name of the field in response.</li>
+<li>
+<p><code>type</code> - type of the field. Valid values for type are the functions  that <a href="http://chancejs.com/">Chance.js</a> provides. In addition to that, type can also be one of the following:</p>
+
+<ul>
+<li>
+<p>array</p>
+
+<ul>
+<li>If type is <code>array</code> then also property <code>children</code> must be included. This describes how the array should be filled.</li>
+<li>With <code>count</code> you can set the amount of children generated.</li>
+</ul>
+</li>
+<li>
+<p>object</p>
+
+<ul>
+<li>If type is <code>object</code>then also property <code>fields</code> must be included. This describes the properties of the object, just like in the request body.</li>
+</ul>
+</li>
+<li>date
+
+<ul>
+<li>Valid options for date are:
+
+<ul>
+<li>
+<code>from</code> - starting date, see <a href="http://momentjs.com/docs/#/parsing/">http://momentjs.com/docs/#/parsing/</a>
+</li>
+<li>
+<code>format</code> - output format, see <a href="http://momentjs.com/docs/#/displaying/">http://momentjs.com/docs/#/displaying/</a>.</li>
+<li>
+<code>add</code> - amount and unit to add to previous date, see <a href="http://momentjs.com/docs/#/manipulating/add/">http://momentjs.com/docs/#/manipulating/add/</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<code>value</code> - value of the field. Rest of the properties are ignored.</li>
+<li>
+<code>options</code> - options to pass to <a href="http://chancejs.com/">Chance.js</a> - depends of type used.</li>
+</ul>
+
+<h2>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a id="simple-data-types" class="anchor" href="#simple-data-types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple data types</h3>
+
+<p>Request:</p>
+
+<pre><code>{
+    "fields": [
+        {
+            "name": "female_firstname",
+            "type": "first",
+            "options": {
+                "gender": "female"
+            }
+        },
+        {
+            "name": "email",
+            "type": "email"
+        }
+    ]
+}
+</code></pre>
+
+<p>Response:</p>
+
+<pre><code>{
+    "message": "OK",
+    "data": {
+        "female_firstname": "Fannie",
+        "email": "iviasli@na.co.uk"
+    }
+}
+</code></pre>
+
+<h3>
+<a id="object-with-static-values" class="anchor" href="#object-with-static-values" aria-hidden="true"><span class="octicon octicon-link"></span></a>Object with static values</h3>
+
+<pre><code>{
+    "fields": [
+        {
+            "name": "foo",
+            "value": "bar"
+        }
+    ]
+}
+</code></pre>
+
+<pre><code>{
+    "message": "OK",
+    "data": {
+        "foo": "bar"
+    }
+}
+</code></pre>
+
+<h3>
+<a id="simple-array-of-strings" class="anchor" href="#simple-array-of-strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple array of strings</h3>
+
+<pre><code>{
+    "fields": [
+        {
+            "name": "words",
+            "type": "array",
+            "children": [{
+                "type": "word",
+                "count": 10
+            }]
+        }
+    ]
+}
+</code></pre>
+
+<pre><code>{
+    "message": "OK",
+    "data": {
+        "words": [
+            "on",
+            "ge",
+            "tu",
+            "ififla",
+            "apocejpol",
+            "jipif",
+            "gi",
+            "uzeoz",
+            "ne",
+            "ado"
+        ]
+    }
+}
+</code></pre>
+
+<h3>
+<a id="range-of-dates" class="anchor" href="#range-of-dates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Range of dates</h3>
+
+<pre><code>{
+    "fields": [
+        {
+            "name": "dates",
+            "type": "array",
+            "children": [{
+                "type": "object",
+                "fields": [
+                    {
+                        "name": "name",
+                        "type": "name"
+                    },
+                    {
+                        "name": "date",
+                        "type": "date",
+                        "options": {
+                            "from": "2015-01-01",
+                            "format": "YYYY-MM-DD",
+                            "add": {
+                                "amount": 1,
+                                "unit": "days"
+                            }
+                        }
+                    }
+                ],
+                "count": 3
+            }]
+        }
+    ]
+}
+</code></pre>
+
+<pre><code>{
+    "message": "OK",
+    "data": {
+        "dates": [
+            {
+                "name": "Cornelia Rodriquez",
+                "date": "2015-01-01"
+            },
+            {
+                "name": "Sara Elliott",
+                "date": "2015-01-02"
+            },
+            {
+                "name": "Dylan Green",
+                "date": "2015-01-03"
+            }
+        ]
+    }
+}
+</code></pre>
+
+<h2>
+<a id="try-it" class="anchor" href="#try-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try it</h2>
+
+<p>Point your requests to <a href="responsemocker.herokuapp.com/api">responsemocker.herokuapp.com/api</a></p>
+
+<h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO</h2>
+
+<ul>
+<li>Allow multiple values for <code>add</code>in <code>date</code>-type fields.</li>
+</ul>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/hannupekka/mocker">Mocker</a> is maintained by <a href="https://github.com/hannupekka">hannupekka</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
