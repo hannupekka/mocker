@@ -10,6 +10,7 @@
     "disallowImplicitTypeConversion": ["string"],
     "safeContextKeyword": "_this",
     "excludeFiles": [
-	"node_modules/**"
+	    "node_modules/**",
+	    "public/js/**"
     ]
 }

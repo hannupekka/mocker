@@ -1,14 +1,10 @@
 var RequestContainer = React.createClass({
     getInitialState: function() {
         return {
-            data: {
-                message: "OK",
-                data: []
-            }
+            data: {}
         };
     },
     sendRequest: function(requestBody) {
-        console.log('sent', requestBody);
         $.ajax({
             url: '/api',
             dataType: 'json',
@@ -16,11 +12,7 @@ var RequestContainer = React.createClass({
             contentType: 'application/json',
             data: requestBody,
             success: function(response) {
-                var data = {
-                    message: response.message,
-                    data: JSON.stringify(response.data, null, '\t')
-                };
-                this.setState({data: data});
+                this.setState({data: JSON.stringify(response, null, '\t')});
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error('/api', status, err.toString());
@@ -38,10 +30,6 @@ var RequestContainer = React.createClass({
 });
 
 var RequestForm = React.createClass({
-    /*getInitialState: function() {
-        console.log('resetted');
-        return {value: JSON.stringify({"fields": [{"name": "foo", "type": "word"}]}, null, '\t')};
-    },*/
     handleSubmit: function(e) {
         e.preventDefault();
         var requestBody = React.findDOMNode(this.refs.requestBody).value.trim();
@@ -52,7 +40,7 @@ var RequestForm = React.createClass({
         return;
     },
     componentDidMount: function() {
-      $('#requestBody').val(JSON.stringify({"fields": [{"name": "foo", "type": "word"}]}, null, '\t')).ace({ lang: 'json' });
+      $('#requestBody').val(JSON.stringify({"fields": [{"name": "name", "type": "name"}]}, null, '\t')).ace({ lang: 'json' });
     },
     render: function() {
         return (
@@ -69,14 +57,11 @@ var RequestForm = React.createClass({
 });
 
 var ResponseBox = React.createClass({
-    componentDidMount: function() {
-      //$('#responseBody').ace({ lang: 'json' });
-    },
     render: function() {
         return (
             <div>
-            <strong>Response: </strong><em>{this.props.data.message}</em>
-            <pre>{this.props.data.data}</pre>
+            <label>Response</label>
+            <pre>{this.props.data}</pre>
            </div>
         );
     }
@@ -86,7 +71,3 @@ React.render(
     <RequestContainer />,
     document.getElementById('content')
 );
-
-var defaultRequest = function() {
-        return "foo";
-    };
