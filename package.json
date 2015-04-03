@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "chance": "^0.7.3",
+    "gulp": "^3.8.11",
     "hapi": "^8.4.0",
     "lodash": "^3.5.0",
     "moment": "^2.9.0"

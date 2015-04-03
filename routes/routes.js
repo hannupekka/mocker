@@ -5,36 +5,51 @@ var chance = new Chance();
 var moment = require('moment');
 
 // Routes.
-module.exports = {
-    // Listen for all methods.
-    method: '*',
-    // Listen under /api/*.
-    path: '/api/{path*}',
-    handler: function(request, reply) {
-        // Get request body.
-        var payload = _.isEmpty(request.payload) ? {} : request.payload;
+module.exports = [
+    // Mock calls.
+    {
+        // Listen for all methods.
+        method: ['GET', 'POST', 'PUT', 'DELETE'],
+        // Listen under /api/*.
+        path: '/api/{path*}',
+        handler: function(request, reply) {
+            // Get request body.
+            var payload = _.isEmpty(request.payload) ? {} : request.payload;
 
-        // Get fields from body.
-        var fields = payload.fields;
+            // Get fields from body.
+            var fields = payload.fields;
 
-        // Initialize response.
-        var response = {'message': 'OK', 'data': {}};
+            // Initialize response.
+            var response = {'message': 'OK', 'data': {}};
 
-        // No fields in request body, return empty response.
-        if (_.isUndefined(fields)) {
-            response.message = 'Missing parameter fields from request.';
-            return reply(response);
+            // No fields in request body, return empty response.
+            if (_.isUndefined(fields)) {
+                response.message = 'Missing parameter fields from request.';
+                return reply(response);
+            }
+
+            // Loop trough fields and either generate or use static value for each.
+            _.each(fields, function(field) {
+                response.data[field.name] = !_.isUndefined(field.value) ? field.value : generate(field);
+            });
+
+            // Reply to user.
+            reply(response);
         }
-
-        // Loop trough fields and either generate or use static value for each.
-        _.each(fields, function(field) {
-            response.data[field.name] = !_.isUndefined(field.value) ? field.value : generate(field);
-        });
-
-        // Reply to user.
-        reply(response);
+    },
+    // Static demo site.
+    {
+        // Listen only for GET
+        method: 'GET',
+        path: '/{param*}',
+        handler: {
+            directory: {
+                // Serve content from public/
+                path: 'public'
+            }
+        }
     }
-};
+];
 
 /**
  * Generates values for field.
