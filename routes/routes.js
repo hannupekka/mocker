@@ -25,7 +25,10 @@ module.exports = [
             var schema = payload.schema;
 
             // Initialize response.
-            var response = {'message': 'OK', 'data': {}};
+            var response = {
+                'message': 'OK',
+                'data': {}
+            };
 
             // Check if fields are specified.
             if (_.isUndefined(fields)) {
@@ -49,9 +52,9 @@ module.exports = [
                         // Generate object.
                         try {
                             response.data[name] = schema2object.properties2object({
-                               generators: generators,
-                               properties: properties,
-                               definitions: schema
+                                generators: generators,
+                                properties: properties,
+                                definitions: schema
                             });
                         } catch (exception) {
                             response.data[name] = 'Invalid schema.';
@@ -121,9 +124,9 @@ var generate = function(field, iteration) {
                 // Use schema to generate field properties.
                 var properties = schema.properties;
                 value = schema2object.properties2object({
-                   generators: generators,
-                   properties: properties,
-                   definitions: schema
+                    generators: generators,
+                    properties: properties,
+                    definitions: schema
                 });
             }
             break;
