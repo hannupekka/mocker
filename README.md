@@ -1,5 +1,4 @@
-# Mocker [![Build Status](https://travis-ci.org/hannupekka/mocker.svg?branch=master)](https://travis-ci.org/hannupekka/mocker)
-[![Codeship Status](https://codeship.com/projects/72886/status?branch=master)]
+# Mocker [![Build Status](https://travis-ci.org/hannupekka/mocker.svg?branch=master)](https://travis-ci.org/hannupekka/mocker) ![Codeship Status](https://codeship.com/projects/72886/status?branch=master)
 
 With Mocker, you can fake responses for your HTTP requests. Just send a JSON object describing the response you need along the request and Mocker takes care of rest.
 
