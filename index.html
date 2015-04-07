@@ -20,10 +20,16 @@
 
     <section class="main-content">
       <h1>
-<a id="mocker-" class="anchor" href="#mocker-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mocker <a href="https://travis-ci.org/hannupekka/mocker"><img src="https://travis-ci.org/hannupekka/mocker.svg?branch=master" alt="Build Status"></a>
+<a id="mocker--" class="anchor" href="#mocker--" aria-hidden="true"><span class="octicon octicon-link"></span></a>Mocker <a href="https://travis-ci.org/hannupekka/mocker"><img src="https://travis-ci.org/hannupekka/mocker.svg?branch=master" alt="Build Status"></a> <img src="https://codeship.com/projects/842f4440-bf18-0132-325a-020f906a5190/status?branch=master" alt="Codeship Status">
 </h1>
 
-<p>With Mocker, you can fake responses for your HTTP requests. Just send a JSON object describing the response you need along the request and Mocker takes care of rest.</p>
+<p>With Mocker, you can fake responses for your HTTP requests. Just send a JSON object describing the response you need along the request and Mocker takes care of rest. Mocker uses the following awesome libraries to generate data:</p>
+
+<ul>
+<li><a href="http://chancejs.com/">Chance.js</a></li>
+<li><a href="http://momentjs.com/">Moment.js</a></li>
+<li><a href="https://github.com/bebraw/schema2object">schema2object</a></li>
+</ul>
 
 <h2>
 <a id="installing-and-running" class="anchor" href="#installing-and-running" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installing and running</h2>
@@ -44,25 +50,26 @@
 
 <p>Structure for request body is as follows:</p>
 
-<pre><code>{
-    "fields": []
-}
-</code></pre>
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [],
+    <span class="pl-s"><span class="pl-pds">"</span>schema<span class="pl-pds">"</span></span>: {}
+}</pre></div>
 
 <p><code>fields</code>-property should be filled with objects, that describe fields. Structure for field objects is:</p>
 
-<pre><code>{
-    "name": "&lt;field name&gt;",
-    "type": "&lt;field type&gt;",
-    "value": "&lt;field value&gt;",
-    "options": {
-        "&lt;option name&gt;": "&lt;option value&gt;"
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;field name&gt;<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;field type&gt;<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;field value&gt;<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>&lt;option name&gt;<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;option value&gt;<span class="pl-pds">"</span></span>
     },
-    "children": [],
-    "count": 0
+    <span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span>: [],
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: {},
+    <span class="pl-s"><span class="pl-pds">"</span>schema<span class="pl-pds">"</span></span>: {},
+    <span class="pl-s"><span class="pl-pds">"</span>count<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>
 
-}
-</code></pre>
+}</pre></div>
 
 <ul>
 <li>
@@ -107,10 +114,14 @@
 </ul>
 </li>
 <li>
-<code>value</code> - value of the field. Rest of the properties are ignored.</li>
+<code>value</code> - value of the field. Rest of the properties (except <code>name</code>) are ignored, if this is set.</li>
+<li>
+<code>schema</code> - use <a href="https://github.com/bebraw/schema2object">schema2object</a> to define object properties. Rest of the properties (except <code>name</code>) are ignored, if this is set.</li>
 <li>
 <code>options</code> - options to pass to <a href="http://chancejs.com/">Chance.js</a> - depends of type used.</li>
 </ul>
+
+<p><code>schema</code>-property should be valid <a href="https://github.com/bebraw/schema2object">schema2object</a> schema. <code>fields</code>-property should not be defined when using this since it takes precedence.</p>
 
 <h2>
 <a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h2>
@@ -120,146 +131,691 @@
 
 <p>Request:</p>
 
-<pre><code>{
-    "fields": [
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [
         {
-            "name": "female_firstname",
-            "type": "first",
-            "options": {
-                "gender": "female"
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>female_firstname<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>first<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>gender<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>female<span class="pl-pds">"</span></span>
             }
         },
         {
-            "name": "email",
-            "type": "email"
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>email<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>email<span class="pl-pds">"</span></span>
         }
     ]
-}
-</code></pre>
+}</pre></div>
 
 <p>Response:</p>
 
-<pre><code>{
-    "message": "OK",
-    "data": {
-        "female_firstname": "Fannie",
-        "email": "iviasli@na.co.uk"
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>female_firstname<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Fannie<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>email<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>iviasli@na.co.uk<span class="pl-pds">"</span></span>
     }
-}
-</code></pre>
+}</pre></div>
 
 <h3>
 <a id="object-with-static-values" class="anchor" href="#object-with-static-values" aria-hidden="true"><span class="octicon octicon-link"></span></a>Object with static values</h3>
 
-<pre><code>{
-    "fields": [
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [
         {
-            "name": "foo",
-            "value": "bar"
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>value<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>bar<span class="pl-pds">"</span></span>
         }
     ]
-}
-</code></pre>
+}</pre></div>
 
-<pre><code>{
-    "message": "OK",
-    "data": {
-        "foo": "bar"
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>foo<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>bar<span class="pl-pds">"</span></span>
     }
-}
-</code></pre>
+}</pre></div>
 
 <h3>
 <a id="simple-array-of-strings" class="anchor" href="#simple-array-of-strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple array of strings</h3>
 
-<pre><code>{
-    "fields": [
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [
         {
-            "name": "words",
-            "type": "array",
-            "children": [{
-                "type": "word",
-                "count": 10
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>words<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span>: [{
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>word<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>count<span class="pl-pds">"</span></span>: <span class="pl-c1">10</span>
             }]
         }
     ]
-}
-</code></pre>
+}</pre></div>
 
-<pre><code>{
-    "message": "OK",
-    "data": {
-        "words": [
-            "on",
-            "ge",
-            "tu",
-            "ififla",
-            "apocejpol",
-            "jipif",
-            "gi",
-            "uzeoz",
-            "ne",
-            "ado"
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>words<span class="pl-pds">"</span></span>: [
+            <span class="pl-s"><span class="pl-pds">"</span>on<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>ge<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>tu<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>ififla<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>apocejpol<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>jipif<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>gi<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>uzeoz<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>ne<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>ado<span class="pl-pds">"</span></span>
         ]
     }
-}
-</code></pre>
+}</pre></div>
 
 <h3>
 <a id="range-of-dates" class="anchor" href="#range-of-dates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Range of dates</h3>
 
-<pre><code>{
-    "fields": [
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [
         {
-            "name": "dates",
-            "type": "array",
-            "children": [{
-                "type": "object",
-                "fields": [
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>dates<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span>: [{
+                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [
                     {
-                        "name": "name",
-                        "type": "name"
+                        <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>
                     },
                     {
-                        "name": "date",
-                        "type": "date",
-                        "options": {
-                            "from": "2015-01-01",
-                            "format": "YYYY-MM-DD",
-                            "add": {
-                                "amount": 1,
-                                "unit": "days"
+                        <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>options<span class="pl-pds">"</span></span>: {
+                            <span class="pl-s"><span class="pl-pds">"</span>from<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-01-01<span class="pl-pds">"</span></span>,
+                            <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>YYYY-MM-DD<span class="pl-pds">"</span></span>,
+                            <span class="pl-s"><span class="pl-pds">"</span>add<span class="pl-pds">"</span></span>: {
+                                <span class="pl-s"><span class="pl-pds">"</span>amount<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+                                <span class="pl-s"><span class="pl-pds">"</span>unit<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>days<span class="pl-pds">"</span></span>
                             }
                         }
                     }
                 ],
-                "count": 3
+                <span class="pl-s"><span class="pl-pds">"</span>count<span class="pl-pds">"</span></span>: <span class="pl-c1">3</span>
             }]
         }
     ]
-}
-</code></pre>
+}</pre></div>
 
-<pre><code>{
-    "message": "OK",
-    "data": {
-        "dates": [
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>dates<span class="pl-pds">"</span></span>: [
             {
-                "name": "Cornelia Rodriquez",
-                "date": "2015-01-01"
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Cornelia Rodriquez<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-01-01<span class="pl-pds">"</span></span>
             },
             {
-                "name": "Sara Elliott",
-                "date": "2015-01-02"
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Sara Elliott<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-01-02<span class="pl-pds">"</span></span>
             },
             {
-                "name": "Dylan Green",
-                "date": "2015-01-03"
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Dylan Green<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-01-03<span class="pl-pds">"</span></span>
             }
         ]
     }
-}
-</code></pre>
+}</pre></div>
+
+<h3>
+<a id="using-schema-instead-of-fields" class="anchor" href="#using-schema-instead-of-fields" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using schema instead of fields</h3>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>schema<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>Client<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>required<span class="pl-pds">"</span></span>: [
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>address<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>city<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>postalCode<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>phone<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>companyId<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>iban<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>bic<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>language<span class="pl-pds">"</span></span>
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>address<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>city<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>postalCode<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>phone<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>companyId<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/Id<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>iban<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>bic<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>language<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span>: [
+                        <span class="pl-s"><span class="pl-pds">"</span>en-en<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>fi-fi<span class="pl-pds">"</span></span>
+                    ]
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice was created at<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice was updated<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>Error<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>payload<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>object<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>Id<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the invoice pending<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoiceItem<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Description of the invoice item<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Cost of the invoice item<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>default<span class="pl-pds">"</span></span>: <span class="pl-c1">0</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Vat of the invoice item<span class="pl-pds">"</span></span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoicePending<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>required<span class="pl-pds">"</span></span>: [
+                <span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>receiver<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>due<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>paymentDays<span class="pl-pds">"</span></span>
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>invoiceId<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Unique invoice id generated internally by the backend<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>status<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span>: [
+                        <span class="pl-s"><span class="pl-pds">"</span>WAITING_TO_BE_SENT<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>SENT<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>WAITING_PAYMENT<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>RECEIVED_PAYMENT<span class="pl-pds">"</span></span>
+                    ],
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Status of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/Id<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Sender of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>receiver<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/Id<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Receiver of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>minItems<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>: {
+                        <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/InvoiceItem<span class="pl-pds">"</span></span>
+                    },
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Items of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>due<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice is due<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>paymentDays<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Amount of days to pay the bill<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>default<span class="pl-pds">"</span></span>: <span class="pl-c1">8</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice was created at<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice was updated<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoiceSent<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>required<span class="pl-pds">"</span></span>: [
+                <span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>receiver<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>due<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>paymentDays<span class="pl-pds">"</span></span>
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>invoiceId<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Unique invoice id generated internally by the backend<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>status<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span>: [
+                        <span class="pl-s"><span class="pl-pds">"</span>WAITING_TO_BE_SENT<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>SENT<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>WAITING_PAYMENT<span class="pl-pds">"</span></span>,
+                        <span class="pl-s"><span class="pl-pds">"</span>RECEIVED_PAYMENT<span class="pl-pds">"</span></span>
+                    ],
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Status of the invoice sent<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/Id<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Sender of the invoice sent<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>receiver<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/Id<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Receiver of the invoice sent<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>minItems<span class="pl-pds">"</span></span>: <span class="pl-c1">1</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>: {
+                        <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/InvoiceItem<span class="pl-pds">"</span></span>
+                    },
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Items of the invoice sent<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>due<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice is due<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>paymentDays<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Amount of days to pay the bill<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>default<span class="pl-pds">"</span></span>: <span class="pl-c1">8</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice was created at<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the invoice was updated<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoiceStatus<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>enum<span class="pl-pds">"</span></span>: [
+                <span class="pl-s"><span class="pl-pds">"</span>WAITING_TO_BE_SENT<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>SENT<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>WAITING_PAYMENT<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>RECEIVED_PAYMENT<span class="pl-pds">"</span></span>
+            ]
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>ProductGroup<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>required<span class="pl-pds">"</span></span>: [
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Name of the product group<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Description of the product group<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the group was created at<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the group was updated<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>Product<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>required<span class="pl-pds">"</span></span>: [
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>purchasePrice<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>sellingPrice<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>priceChanged<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>group<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>inStock<span class="pl-pds">"</span></span>
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the invoice pending<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Name of the product<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Description of the product<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>purchasePrice<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Purchase price of the product<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>sellingPrice<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Selling price of the product<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>priceChanged<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Date when price of the product changed<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>VAT of the product<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>group<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>$ref<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>#/definitions/Id<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Group of the product<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>inStock<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>boolean<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Is the product in the stock<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the group was created at<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>date-time<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Day in which the group was updated<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span>: <span class="pl-c1">true</span>
+                }
+            }
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>User<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the user<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                },
+                <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: {
+                    <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Invoicing id that is unique per user<span class="pl-pds">"</span></span>
+                }
+            }
+        }
+    }
+}</pre></div>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>Client<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">8.521507304594526e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>]1<span class="pl-cce">\"\\</span>_IF~Jg&lt;_v)/,N[MC%a=)4)5/i_;w{JRDV#:uM~M-]JCJ=eg;<span class="pl-cce">\\</span>p[@6a%[_y=9E]4tH1=uVb#0kA)[h<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>address<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Q,@}L5k+!ca(QV3?Xqq4NaB;x&lt;IDCH7;h(^O<span class="pl-cce">\\\\</span>![tT8Ah4;Vir#]#tP:O<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>city<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>CJf9q=eUaoVb`HJW1<span class="pl-cce">\\</span>L,|bqugdb03~fR}!aE<span class="pl-cce">\\</span>Q2H_|57]9|{3p]kSy&gt;?x+gk(z+CCANdV/H3(ZP_cU8wb?&lt;3x^y|UI=29sFC&amp;a<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>postalCode<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>9HrX|1Cojhl-,f+<span class="pl-cce">\"</span>)N|ED+B&gt;3]CjR}wM.M.~kIK{kY6.&amp;O%+a}k-ZI~80lrp;od4_c&lt;py&lt;2rv@viP2YQG6OUii{!yk0aCH<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>phone<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>=JL:xyx60k<span class="pl-cce">\\</span>d`^E4p`i=)h`FZYG,_%oBw<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>companyId<span class="pl-pds">"</span></span>: <span class="pl-c1">6.813044670972909e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>iban<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>drq=-7ID3bQ{g~'M-]lq?:SXe05-'hzvOD6_jaK<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>bic<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>$K^bE<span class="pl-cce">\"</span>vTeVa*xE&gt;X6XtL~ZjV^b,/=:&amp;vWpS,*{GTB3Zb^,T`i0.`^ScowvXxnvp3;<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>language<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>fi-fi<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.074Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.074Z<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>Error<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>payload<span class="pl-pds">"</span></span>: {},
+            <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>/9gf~snl&amp;F[Zuk9T[q4?_wJ9TVE!v;0GJI,#nLh)Nv<span class="pl-cce">\\</span>sCU<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>Id<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Missing properties<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>InvoiceItem<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>xf1B}wna9*&lt;hnI[z6JU#$fpW|<span class="pl-cce">\"</span>:ihYH&gt;Z`SB;uNnu26F&amp;My.f)<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.0543275899029713e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">4.656849943295265e+307</span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoicePending<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">9.53169985720178e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>invoiceId<span class="pl-pds">"</span></span>: <span class="pl-c1">1.053087805891723e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>status<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>RECEIVED_PAYMENT<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span>: <span class="pl-c1">6.469689791564423e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>receiver<span class="pl-pds">"</span></span>: <span class="pl-c1">1.758843833202085e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>: [
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>YO|c1iM<span class="pl-cce">\"\\</span>/21K3k=HYG},?kz(+DM]U=X#Tv0xHt0sL?,<span class="pl-cce">\\</span>]+,,}3Ft_x}<span class="pl-cce">\"</span>*%hRZwy<span class="pl-cce">\"</span>p+(Pq~(1JrAJ<span class="pl-cce">\"</span>1aC<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.1183951752013998e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">1.203785723603266e+308</span>
+                },
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>LUV/,X]Vp#q6.:y.K~{&gt;mc/NJ@DTI.&amp;19.vFMF=RNdy`#~h&gt;1;.]V-D/Ek+U[mD[0?3<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.2052516013718853e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">4.3070833865883046e+307</span>
+                },
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>yT:PCE|UU~'sE~)-^Y,o?t@9K/k#s~4KGK6_uRo&lt;8l.rFgq<span class="pl-cce">\\</span>/E+iazskO8A/G;2(71[NKJEF<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">5.9447167145861625e+307</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">7.069464264944443e+307</span>
+                }
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>due<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>paymentDays<span class="pl-pds">"</span></span>: <span class="pl-c1">1.1160628211604633e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.080Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.080Z<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoiceSent<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.5046042297702422e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>invoiceId<span class="pl-pds">"</span></span>: <span class="pl-c1">2.600542432498807e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>status<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>WAITING_TO_BE_SENT<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>sender<span class="pl-pds">"</span></span>: <span class="pl-c1">1.472496282237761e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>receiver<span class="pl-pds">"</span></span>: <span class="pl-c1">2.406043629962047e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>items<span class="pl-pds">"</span></span>: [
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>wK)vZbfl7C9D]gfFSn9u-q<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.6908087700539216e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">1.0151218931789231e+308</span>
+                },
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>~uE3&lt;f/#2LGP2~'cjwd{DS3,d^z_c2c.^Zah^#(&lt;BRl[mDrD:#<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.13534830771743e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">7.198566770909733e+307</span>
+                },
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2_I9E{Kpy*9BZLDV<span class="pl-cce">\"</span>Con6bOh&gt;.;1|oTOM~rYuh4o<span class="pl-cce">\"</span>.5KBZ?}ZB.xr!@4?F#m~[Mk]x3*g<span class="pl-cce">\"</span>BFC{Z'2da0@5,/d::p.UN2<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.785781014624167e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">8.204417570640669e+307</span>
+                },
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>-g;`fPa@&gt;a1Z*RhTttuL=3_|w<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.3553775662054665e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">7.682628946088098e+307</span>
+                },
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>1wHVVZM+n4`7zwdUY.MUE:$u;Rr`x39&lt;qO)Gw=o-Bq&amp;@,+&amp;F#P'JlQyw4$P0d=L/]*.?DF6:YD:rmaB{.aY;10r<span class="pl-pds">"</span></span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>cost<span class="pl-pds">"</span></span>: <span class="pl-c1">1.7941508676239046e+308</span>,
+                    <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">1.3618314115532151e+308</span>
+                }
+            ],
+            <span class="pl-s"><span class="pl-pds">"</span>due<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>paymentDays<span class="pl-pds">"</span></span>: <span class="pl-c1">1.6215462624043726e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.086Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.086Z<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>InvoiceStatus<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Missing properties<span class="pl-pds">"</span></span>,
+        <span class="pl-s"><span class="pl-pds">"</span>ProductGroup<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.2035163438280712e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>a!K,U%{mKT#J-4xcShE*R&lt;]8+wr/<span class="pl-cce">\"</span>2=lKysz3<span class="pl-cce">\\</span>-S'`Y%to|q8[1<span class="pl-cce">\"</span>G~+C8yil4TT^|1KnKJae@SO1r<span class="pl-cce">\"</span>J8wv:)(v7n)@<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&amp;&amp;.a<span class="pl-cce">\"</span>hgvl&amp;2vxMG}A=<span class="pl-cce">\"</span><span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.087Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.087Z<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>Product<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.0966499359971245e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&lt;Sv:MaR=jvP,)NRWS%@$`3^JzX:}3Z5|?$v8Erf0B6=Sp=+5nD`]iEhN&amp;B<span class="pl-cce">\\</span>1U=?g<span class="pl-cce">\\</span>WyxdJfgsghti}<span class="pl-cce">\\</span>(ob*D$.E}moXo3-<span class="pl-cce">\"</span>J&lt;Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>wnRj6spP]&lt;%h54&amp;&amp;',!zdR<span class="pl-cce">\"</span>~tN<span class="pl-cce">\\</span>)t1ZZ4%^8/pc3oRq0iwH7~:O6}n8c_c`n&lt;~<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>purchasePrice<span class="pl-pds">"</span></span>: <span class="pl-c1">1.0727900465131778e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>sellingPrice<span class="pl-pds">"</span></span>: <span class="pl-c1">5.833226269121914e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>priceChanged<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.088Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>vat<span class="pl-pds">"</span></span>: <span class="pl-c1">1.0794273487840085e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>group<span class="pl-pds">"</span></span>: <span class="pl-c1">1.1414744777804981e+308</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>inStock<span class="pl-pds">"</span></span>: <span class="pl-c1">false</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>createdAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.089Z<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>updatedAt<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>2015-04-07T10:57:20.089Z<span class="pl-pds">"</span></span>
+        },
+        <span class="pl-s"><span class="pl-pds">"</span>User<span class="pl-pds">"</span></span>: {
+            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.8901164421102586e+307</span>,
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>c3_o0fQgr~DsVApF_fjnZmV/sw)tLt9pF{<span class="pl-cce">\"</span>`4oXv`A/'~y<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: <span class="pl-c1">1.1266662426415996e+308</span>
+        }
+    }
+}</pre></div>
+
+<h3>
+<a id="array-of-objects-defined-by-schema" class="anchor" href="#array-of-objects-defined-by-schema" aria-hidden="true"><span class="octicon octicon-link"></span></a>Array of objects, defined by schema</h3>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>fields<span class="pl-pds">"</span></span>: [
+        {
+            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>:<span class="pl-s"><span class="pl-pds">"</span>users<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>array<span class="pl-pds">"</span></span>,
+            <span class="pl-s"><span class="pl-pds">"</span>children<span class="pl-pds">"</span></span>: [
+                {
+                    <span class="pl-s"><span class="pl-pds">"</span>schema<span class="pl-pds">"</span></span>: {
+                        <span class="pl-s"><span class="pl-pds">"</span>properties<span class="pl-pds">"</span></span>: {
+                            <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: {
+                                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>integer<span class="pl-pds">"</span></span>,
+                                <span class="pl-s"><span class="pl-pds">"</span>format<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>int32<span class="pl-pds">"</span></span>,
+                                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Id of the user<span class="pl-pds">"</span></span>
+                            },
+                            <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: {
+                                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>string<span class="pl-pds">"</span></span>
+                            },
+                            <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: {
+                                <span class="pl-s"><span class="pl-pds">"</span>type<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>number<span class="pl-pds">"</span></span>,
+                                <span class="pl-s"><span class="pl-pds">"</span>description<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>Invoicing id that is unique per user<span class="pl-pds">"</span></span>
+                            }
+                        }
+                    },
+                    <span class="pl-s"><span class="pl-pds">"</span>count<span class="pl-pds">"</span></span>: <span class="pl-c1">5</span>
+                }
+            ]
+        }
+    ]
+}</pre></div>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>message<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>OK<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>data<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>users<span class="pl-pds">"</span></span>: [
+            {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.0637304048248677e+307</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>i<span class="pl-cce">\"</span>vc4BDH=DSSITgNEp-Zfzxke-3GVPc,+b&gt;,B'l-<span class="pl-cce">\\</span>{5A&lt;7&lt;YHK~*T-~w.K9T5rb&amp;Nrc)<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: <span class="pl-c1">7.621919147730567e+307</span>
+            },
+            {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.6083189281346103e+308</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>RxH<span class="pl-cce">\\</span>cPo!7l&lt;<span class="pl-cce">\\</span>Hjcmib_[;so%S<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: <span class="pl-c1">4.941917906214933e+307</span>
+            },
+            {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.5125068547902805e+308</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>V0`Q$([M)b{?|E6<span class="pl-cce">\"</span>a]<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: <span class="pl-c1">2.186935028830185e+307</span>
+            },
+            {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">1.4827991120699375e+308</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>(bC0:~0`V8<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: <span class="pl-c1">2.9299701360217206e+306</span>
+            },
+            {
+                <span class="pl-s"><span class="pl-pds">"</span>id<span class="pl-pds">"</span></span>: <span class="pl-c1">7.817983813601413e+307</span>,
+                <span class="pl-s"><span class="pl-pds">"</span>name<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>7Y!]lsLJAZ`szCJBe;^H16{zE&lt;&amp;vG[Sov/En5<span class="pl-pds">"</span></span>,
+                <span class="pl-s"><span class="pl-pds">"</span>invoicingId<span class="pl-pds">"</span></span>: <span class="pl-c1">1.3825187708189598e+308</span>
+            }
+        ]
+    }
+}</pre></div>
 
 <h2>
 <a id="try-it" class="anchor" href="#try-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Try it</h2>
