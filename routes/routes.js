@@ -42,7 +42,7 @@ module.exports = [
 
                         // Make sure we have properties.
                         if (_.isUndefined(properties)) {
-                            response.data[name] = "Missing properties";
+                            response.data[name] = 'Missing properties';
                             return;
                         }
 
@@ -96,6 +96,11 @@ var generate = function(field, iteration) {
 
     // Check if schema is specified.
     var schema = field.schema;
+
+    // Ignore type if schema is provided.
+    if (!_.isUndefined(schema)) {
+        delete field.type;
+    }
 
     // Check which type field is.
     switch (field.type) {
