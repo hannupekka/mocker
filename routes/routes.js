@@ -33,13 +33,33 @@ module.exports = [
                 if (_.isUndefined(schema)) {
                     response.message = 'Missing parameter fields from request.';
                     return reply(response);
-                }
-            }
+                } else {
+                    // Use schema to generate field properties.
+                    var properties;
+                    _.each(schema, function(field, name) {
+                        // Get properties from schema.
+                        properties = field.properties;
 
-            // Loop trough fields and either generate or use static value for each.
-            _.each(fields, function(field) {
-                response.data[field.name] = !_.isUndefined(field.value) ? field.value : generate(field);
-            });
+                        // Make sure we have properties.
+                        if (_.isUndefined(properties)) {
+                            response.data[name] = "Missing properties";
+                            return;
+                        }
+
+                        // Generate object.
+                        response.data[name] = schema2object.properties2object({
+                           generators: generators,
+                           properties: properties,
+                           definitions: schema
+                        });
+                    });
+                }
+            } else {
+                // Loop trough fields and either generate or use static value for each.
+                _.each(fields, function(field) {
+                    response.data[field.name] = !_.isUndefined(field.value) ? field.value : generate(field);
+                });
+            }
 
             // Reply to user.
             reply(response);
