@@ -3,6 +3,8 @@ var _ = require('lodash');
 var Chance = require('chance');
 var chance = new Chance();
 var moment = require('moment');
+var generators = require('annogenerate');
+var schema2object = require('schema2object');
 
 // Routes.
 module.exports = [
@@ -19,13 +21,19 @@ module.exports = [
             // Get fields from body.
             var fields = payload.fields;
 
+            // Get schema from body.
+            var schema = payload.schema;
+
             // Initialize response.
             var response = {'message': 'OK', 'data': {}};
 
-            // No fields in request body, return empty response.
+            // Check if fields are specified.
             if (_.isUndefined(fields)) {
-                response.message = 'Missing parameter fields from request.';
-                return reply(response);
+                // No fields or schema in request body, return empty response.
+                if (_.isUndefined(schema)) {
+                    response.message = 'Missing parameter fields from request.';
+                    return reply(response);
+                }
             }
 
             // Loop trough fields and either generate or use static value for each.
@@ -66,15 +74,28 @@ var generate = function(field, iteration) {
     // Array children.
     var children = field.children || [];
 
+    // Check if schema is specified.
+    var schema = field.schema;
+
     // Check which type field is.
     switch (field.type) {
         // Default to Chance.js types: http://chancejs.com/
         default:
             var fn = field.type;
 
-            // Check if Chance has a function that matches the type of field. If it has, generate value using that.
-            // If not, field value is null.
-            value = _.isFunction(chance[fn]) ? chance[fn](options) : null;
+            // Check if field has schema.
+            if (_.isUndefined(schema)) {
+                // Check if Chance has a function that matches the type of field. If it has, generate value using that.
+                // If not, field value is null.
+                value = _.isFunction(chance[fn]) ? chance[fn](options) : null;
+            } else {
+                // Use schema to generate field properties.
+                var properties = schema.properties;
+                value = schema2object.properties2object({
+                   generators: generators,
+                   properties: properties
+                });
+            }
             break;
         case 'array':
             value = [];
