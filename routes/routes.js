@@ -42,16 +42,20 @@ module.exports = [
 
                         // Make sure we have properties.
                         if (_.isUndefined(properties)) {
-                            response.data[name] = 'Missing properties';
+                            response.data[name] = 'Missing properties.';
                             return;
                         }
 
                         // Generate object.
-                        response.data[name] = schema2object.properties2object({
-                           generators: generators,
-                           properties: properties,
-                           definitions: schema
-                        });
+                        try {
+                            response.data[name] = schema2object.properties2object({
+                               generators: generators,
+                               properties: properties,
+                               definitions: schema
+                            });
+                        } catch (exception) {
+                            response.data[name] = 'Invalid schema.';
+                        }
                     });
                 }
             } else {
@@ -118,7 +122,8 @@ var generate = function(field, iteration) {
                 var properties = schema.properties;
                 value = schema2object.properties2object({
                    generators: generators,
-                   properties: properties
+                   properties: properties,
+                   definitions: schema
                 });
             }
             break;

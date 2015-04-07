@@ -8,7 +8,7 @@ var url = '/api';
 var moment = require('moment');
 
 // Tests.
-lab.experiment('Test simple data', function() {
+lab.experiment('Test', function() {
     lab.test('Empty payload', function(done) {
         var options = {
             method: method,
@@ -678,6 +678,87 @@ lab.experiment('Test simple data', function() {
             code.expect(payload.data.foo.id).to.be.a.number();
             code.expect(payload.data.foo.name).to.be.a.string();
             code.expect(payload.data.foo.invoicingId).to.be.a.number();
+            done();
+        });
+    });
+    lab.test('Test invalid schema', function(done) {
+        var options = {
+            method: method,
+            url: url,
+            payload: {
+                'schema': {
+                    'Client': {
+                        'required': [
+                            'name',
+                            'address',
+                            'city',
+                            'postalCode',
+                            'phone',
+                            'companyId',
+                            'iban',
+                            'bic',
+                            'language'
+                        ],
+                        'properties': {
+                            'id': {
+                                'type': 'integer',
+                                'format': 'int32',
+                                'description': 'Id of the invoice pending'
+                            },
+                            'name': {
+                                'type': 'string'
+                            },
+                            'address': {
+                                'type': 'string'
+                            },
+                            'city': {
+                                'type': 'string'
+                            },
+                            'postalCode': {
+                                'type': 'string'
+                            },
+                            'phone': {
+                                'type': 'string'
+                            },
+                            'companyId': {
+                                '$ref': '#/definitions/Id'
+                            },
+                            'iban': {
+                                'type': 'string'
+                            },
+                            'bic': {
+                                'type': 'string'
+                            },
+                            'language': {
+                                'type': 'string',
+                                'enum': [
+                                    'en-en',
+                                    'fi-fi'
+                                ]
+                            },
+                            'createdAt': {
+                                'type': 'string',
+                                'format': 'date-time',
+                                'description': 'Day in which the invoice was created at',
+                                'readOnly': true
+                            },
+                            'updatedAt': {
+                                'type': 'string',
+                                'format': 'date-time',
+                                'description': 'Day in which the invoice was updated',
+                                'readOnly': true
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        server.inject(options, function(response) {
+            var payload = JSON.parse(response.payload);
+            code.expect(response.statusCode).to.equal(200);
+            code.expect(payload).to.be.an.object();
+            code.expect(payload.data.Client).to.equal('Invalid schema.')
             done();
         });
     });
